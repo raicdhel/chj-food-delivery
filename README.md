@@ -293,7 +293,7 @@ public interface LocationService {
 }
 ```
 
-- 주문을 받은 직후(@PostPersist) 결제를 요청하도록 처리
+- 결재취소를 받은 직후(@PostPersist) 이력을 저장하도록 처리
 ```
 # Payment.java (Entity)
     @PostUpdate
@@ -316,23 +316,23 @@ public interface LocationService {
     }
 ```
 
-- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 이력 시스템이 장애가 나면 결재취소도 못받는다는 것을 확인:
+- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 이력시스템이 장애가 나면 결재취소도 못받는다는 것을 확인:
 
 
 ```
 # 이력저장 (location) 서비스를 잠시 내려놓음 (ctrl+c)
 
 #주문취소
-http PATCH http://localhost:8088/orders/1 orderStatus=canceled
+http PATCH http://order:8080/orders/1 orderStatus=canceled    #Fail
 ```
 ![image](https://user-images.githubusercontent.com/70673848/98130658-d9871580-1efd-11eb-9447-0175789ca9f1.png)
 ```
-#결제서비스 재기동
+#이력 서비스 재기동
 cd location
 mvn spring-boot:run
 
 #주문처리
-http localhost:8081/orders pizzaId=1 qty=1   #Success
+http PATCH http://order:8080/orders/1 orderStatus=canceled   #Success
 ```
 ![image](https://user-images.githubusercontent.com/70673848/98130748-ef94d600-1efd-11eb-83f6-6acad31ce584.png)
 
@@ -447,22 +447,22 @@ public class PolicyHandler{
 
 ```
 
-쿠폰 시스템은 배송서비스와 완전히 분리되어있으며, 이벤트 수신에 따라 처리되기 때문에, 쿠폰 시스템이 유지보수로 인해 잠시 내려간 상태라도 주문을 받는데 문제가 없다:
+이력저장 시스템은 배송서비스와 완전히 분리되어있으며, 이벤트 수신에 따라 처리되기 때문에, 이력저장 시스템이 유지보수로 인해 잠시 내려간 상태라도 주문을 하는데 문제가 없다:
 
 
 
 ![image](https://user-images.githubusercontent.com/70673848/98187965-7b861c80-1f55-11eb-8ce1-4ec6798e50df.png)
 ![image](https://user-images.githubusercontent.com/70673848/98187975-7de87680-1f55-11eb-8a1f-35e74d86a864.png)
 ```
-쿠폰 서비스를 잠시 내려놓음 
+이력저장 서비스를 잠시 내려놓음 
 ```
 ![image](https://user-images.githubusercontent.com/70673848/98187982-817bfd80-1f55-11eb-946c-3fea9417de92.png)
 ![image](https://user-images.githubusercontent.com/70673848/98187989-83de5780-1f55-11eb-9b3a-1e678cf63948.png)
 ![image](https://user-images.githubusercontent.com/70673848/98187993-86d94800-1f55-11eb-8976-d6aabbe0d48e.png)
 
 ```
-쿠폰 서비스 재기동
-cd coupon
+이력저장 서비스 재기동
+cd location
 mvn spring-boot:run
 
 모든 주문의 상태가 "배송됨"으로 확인
@@ -472,15 +472,11 @@ mvn spring-boot:run
 
 ## CQRS 적용
 
-order의 처리 결과
-
-![image](https://user-images.githubusercontent.com/70673848/98133383-df322a80-1f00-11eb-84ec-86c79e322f64.png)
-
-delivery의 처리 결과 
+location의 처리 결과
 
 ![image](https://user-images.githubusercontent.com/70673848/98133397-e3f6de80-1f00-11eb-9576-5b3ac711f0c4.png)
 
-주문현황을 VIEW로 구현
+이력저장을 VIEW로 구현 (locaview)
 
 ![image](https://user-images.githubusercontent.com/70673848/98133365-d8a3b300-1f00-11eb-9d98-65cb337cc926.png)
 
@@ -527,15 +523,15 @@ hystrix:
       execution.isolation.thread.timeoutInMilliseconds: 500
 
 ```
-- 피호출 서비스 pament onPostPersist영역의 부하코드 추가 - 400 밀리에서 증감 220 밀리 정도 왔다갔다 하게
+- 피호출 서비스 location onPostPersist영역의 부하코드 추가 - 400 밀리에서 증감 220 밀리 정도 왔다갔다 하게
 ```
-# payment.java (Entity)
+# Location.java (Entity)
 
     @PostPersist
     public void onPostPersist(){
-        Paid paid = new Paid();
-        BeanUtils.copyProperties(this, paid);
-        paid.publishAfterCommit();
+        LocationSaved locationSaved = new LocationSaved();
+        BeanUtils.copyProperties(this, locationSaved);
+        locationSaved.publishAfterCommit();
 
         try {
             Thread.sleep((long) (400 + Math.random() * 300));
@@ -556,7 +552,7 @@ hystrix:
 앞서 CB 는 시스템을 안정되게 운영할 수 있게 해줬지만 사용자의 요청을 100% 받아들여주지 못했기 때문에 이에 대한 보완책으로 자동화된 확장 기능을 적용하고자 한다. 
 
 
-- 결제서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 15프로를 넘어서면 replica 를 10개까지 늘려준다:
+- 이력저장시스템에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 15프로를 넘어서면 replica 를 10개까지 늘려준다:
 ```
 kubectl autoscale deploy pay --min=1 --max=10 --cpu-percent=15
 ```
@@ -628,5 +624,5 @@ http get방식에서 tcp방식으로 변경, 서비스포트 8080이 아닌 고�
 
 
 
-
+## MapConfig 구현
 
