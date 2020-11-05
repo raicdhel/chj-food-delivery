@@ -130,7 +130,7 @@
 ## 헥사고날 아키텍처 다이어그램 도출
 
 
-![image](https://user-images.githubusercontent.com/70046307/98229408-34bc1500-1f9d-11eb-879f-c73b4e7f1f53.png)
+![image](https://user-images.githubusercontent.com/70046307/98255293-98a40500-1fc0-11eb-9b8c-daf284ee906d.png)
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
     - 호출관계에서 PubSub 과 Req/Resp 를 구분함
