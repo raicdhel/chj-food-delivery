@@ -454,14 +454,14 @@ public class PolicyHandler{
 
 
 
-![image](https://user-images.githubusercontent.com/70673848/98187965-7b861c80-1f55-11eb-8ce1-4ec6798e50df.png)
+![image](https://user-images.githubusercontent.com/70046307/98261113-6f3aa780-1fc7-11eb-8221-d77809ab5ca4.png)
 ![image](https://user-images.githubusercontent.com/70673848/98187975-7de87680-1f55-11eb-8a1f-35e74d86a864.png)
 ```
 이력저장 서비스를 잠시 내려놓음 
 ```
-![image](https://user-images.githubusercontent.com/70673848/98187982-817bfd80-1f55-11eb-946c-3fea9417de92.png)
-![image](https://user-images.githubusercontent.com/70673848/98187989-83de5780-1f55-11eb-9b3a-1e678cf63948.png)
-![image](https://user-images.githubusercontent.com/70673848/98187993-86d94800-1f55-11eb-8976-d6aabbe0d48e.png)
+![image](https://user-images.githubusercontent.com/70046307/98260799-12d78800-1fc7-11eb-9f63-4d0ae1e95c5c.png)
+![image](https://user-images.githubusercontent.com/70046307/98261113-6f3aa780-1fc7-11eb-8221-d77809ab5ca4.png)
+![image](https://user-images.githubusercontent.com/70046307/98261189-84173b00-1fc7-11eb-92d5-18c32bbb48ba.png)
 
 ```
 이력저장 서비스 재기동
@@ -470,18 +470,18 @@ mvn spring-boot:run
 
 모든 주문의 상태가 "배송됨"으로 확인
 ```
-![image](https://user-images.githubusercontent.com/70673848/98188001-89d43880-1f55-11eb-95a9-00a556648bb1.png)
+![image](https://user-images.githubusercontent.com/70046307/98261308-aad57180-1fc7-11eb-9374-646062c2b59a.png)
 
 
 ## CQRS 적용
 
 location의 처리 결과
 
-![image](https://user-images.githubusercontent.com/70673848/98133397-e3f6de80-1f00-11eb-9576-5b3ac711f0c4.png)
+![image](https://user-images.githubusercontent.com/70046307/98261951-61395680-1fc8-11eb-8eb5-000ab87b3eec.png)
 
 이력저장을 VIEW로 구현 (locaview)
 
-![image](https://user-images.githubusercontent.com/70673848/98133365-d8a3b300-1f00-11eb-9d98-65cb337cc926.png)
+![image](https://user-images.githubusercontent.com/70046307/98262013-74e4bd00-1fc8-11eb-8a58-0129ab1a4c4c.png)
 
 
 ## gateway 적용
