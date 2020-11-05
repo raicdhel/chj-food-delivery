@@ -262,7 +262,7 @@ H2가 아닌 Derby in-memory DB를 사용함
 </dependency>
 ```
 
-![image](https://user-images.githubusercontent.com/70673848/98189149-b38e5f00-1f57-11eb-9017-15370565c091.png)
+![image](https://user-images.githubusercontent.com/70046307/98230803-ed368880-1f9e-11eb-8cc9-4ca5e7f67b2a.png)
 
 
 
