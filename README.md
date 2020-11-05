@@ -273,7 +273,7 @@ H2가 아닌 Derby in-memory DB를 사용함
 - 결제서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
 
 ```
-# (payment) LocationService.java
+# (order) LocationService.java
 
 package pizza.external;
 
@@ -284,7 +284,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Date;
 
-@FeignClient(name="location", url="http://location:8086")
+//@FeignClient(name="location", url="http://location:8080")
+@FeignClient(name="location", url="http://localhost:8086")
 public interface LocationService {
 
     @RequestMapping(method= RequestMethod.POST, path="/locations")
@@ -295,12 +296,13 @@ public interface LocationService {
 
 - 결재취소를 받은 직후(@PostPersist) 이력을 저장하도록 처리
 ```
-# Payment.java (Entity)
+# Order.java (Entity)
+
     @PostUpdate
     public void onPostUpdate(){
-        PaymentCanceled paymentCanceled = new PaymentCanceled();
-        BeanUtils.copyProperties(this, paymentCanceled);
-        paymentCanceled.publishAfterCommit();
+        OrderCanceled orderCanceled = new OrderCanceled();
+        BeanUtils.copyProperties(this, orderCanceled);
+        orderCanceled.publishAfterCommit();
 
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
@@ -308,10 +310,11 @@ public interface LocationService {
         pizza.external.Location location = new pizza.external.Location();
 
         location.setOrderId(this.getId());
-        location.setNowStatus(this.paymentStatus);
+        location.setNowStatus(this.orderStatus);
+        location.setDesc("Thanks !!!");
 
         // mappings goes here
-        PaymentApplication.applicationContext.getBean(pizza.external.LocationService.class)
+        OrderApplication.applicationContext.getBean(pizza.external.LocationService.class)
             .doSave(location);
     }
 ```
