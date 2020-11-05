@@ -29,20 +29,27 @@
 1. 고객이 피자종류와 수량을 주문한다.
 2. 고객이 결제한다
 3. 결제가 되면 배달 시작한다
+3-1. 배달이 완료되면 배달이력을 남긴다.
 4. 고객이 주문을 취소할 수 있다
 5. 주문이 취소되면 결제가 취소된다
+5-1. 결재가 취소되면 결재취소 이력을 남긴다.
 6. 고객이 주문상태를 중간중간 조회한다
 7. 배송이 완료되면 쿠폰이 지급된다.
 
 비기능적 요구사항
 1. 트랜잭션
-    1. 주문이 완료되어야 결제가 가능하다.  Sync 호출 
+    1. 결재가 완료되어야 주문이 완료된다.  Sync 호출 
+    1-1. 이력이 저장되어야 결재취소가 완료된다.    Sync 호출 
 2. 장애격리
     1. 쿠폰발급기능이 수행되지 않더라도 주문은 365일 24시간 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
-    1. 결제시스템이 과중되면 주문을 잠시동안 받지 않고 결제를 잠시후에 하도록 유도한다  Circuit breaker, fallback
+    1-1. 배달이력 저장이 수행되지 않더라도 배달은 365일 24시간 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
+    2. 결제시스템이 과중되면 주문을 잠시동안 받지 않고 결제를 잠시후에 하도록 유도한다  Circuit breaker, fallback
+    2-1. 이력저장 시스템이 과중되면 주문을 잠시동안 받지 않고 결제를 잠시후에 하도록 유도한다  Circuit breaker, fallback
 3. 성능
     1. 고객이 주문에 대한 상태를 시스템에서 확인할 수 있다 CQRS
-    1. 배달이 완료되면 쿠폰이 발행된다  Event driven
+    1-1. 이력저장에 대한 대한 상태를 시스템에서 확인할 수 있다 CQRS
+    2. 배달이 완료되면 쿠폰이 발행된다  Event driven
+    2-1. 배달이 완료되면 배달이력이 저장된다  Event driven
 
 
 # 체크포인트
@@ -105,9 +112,9 @@
 # 분석/설계
     
 ### 이벤트 도출
-* MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/ZTi9sAEiJxRHIn5xXAA2Lkn9KNV2/mine/de3fac4ae58d3699a80eb8ac15eabe8c/-MLCf4nI9XHFhdCI2DhE
+* MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/tDh1qcevbXMxyl3teLYeckoEha73/mine/db91034c71ad70a1cc186453bf65fceb/-MLKyMFOqriwteCkmNJ8
 
-![image](https://user-images.githubusercontent.com/70673848/98124211-3a125480-1ef6-11eb-8c3a-e73d38cbad33.png)
+![image](https://user-images.githubusercontent.com/70046307/98222585-5b298280-1f94-11eb-8847-2e859f699d1a.png)
 
  도메인 서열 분리 
    
