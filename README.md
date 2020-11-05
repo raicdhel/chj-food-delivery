@@ -44,12 +44,12 @@
     1. 쿠폰발급기능이 수행되지 않더라도 주문은 365일 24시간 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
     2. 결제시스템이 과중되면 주문을 잠시동안 받지 않고 결제를 잠시후에 하도록 유도한다  Circuit breaker, fallback
     3. *배달이력 저장이 수행되지 않더라도 배달은 365일 24시간 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
-    4. *이력저장 시스템이 과중되면 주문을 잠시동안 받지 않고 결제를 잠시후에 하도록 유도한다  Circuit breaker, fallback
+    4. *이력저장 시스템이 과중되면 주문을 잠시동안 받지 않고 이력저장을 잠시후에 하도록 유도한다  Circuit breaker, fallback
 3. 성능
-    1. 고객이 주문에 대한 상태를 시스템에서 확인할 수 있다 CQRS
-    1-1. 이력저장에 대한 대한 상태를 시스템에서 확인할 수 있다 CQRS
+    1. 고객이 주문에 대한 상태를 시스템에서 확인할 수 있다 CQRS    
     2. 배달이 완료되면 쿠폰이 발행된다  Event driven
-    2-1. 배달이 완료되면 배달이력이 저장된다  Event driven
+    3. *이력저장에 대한 대한 상태를 시스템에서 확인할 수 있다 CQRS
+    4. *배달이 완료되면 배달이력이 저장된다  Event driven
 
 
 # 체크포인트
