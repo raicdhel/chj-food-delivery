@@ -177,47 +177,22 @@ import org.springframework.beans.BeanUtils;
 import java.util.List;
 
 @Entity
-@Table(name="Order_table")
-public class Order {
+@Table(name="Location_table")
+public class Location {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-    private Long pizzaId;
-    // LDH 소스추가 초기값 설정
-    private String orderStatus ="Ordered";
-    private Long qty;
+    private Long orderId;
+    private String nowStatus;
+    private String desc;
 
     @PostPersist
     public void onPostPersist(){
-        Ordered ordered = new Ordered();
-        BeanUtils.copyProperties(this, ordered);
-        ordered.publishAfterCommit();
-
-        //Following code causes dependency to external APIs
-        // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
-
-        pizza.external.Payment payment = new pizza.external.Payment();
-        
-        payment.setOrderId(this.getId());
-        payment.setPaymentStatus("Paid");
-
-        // mappings goes here
-        OrderApplication.applicationContext.getBean(pizza.external.PaymentService.class)
-            .doPayment(payment);
-
-
+        LocationSaved locationSaved = new LocationSaved();
+        BeanUtils.copyProperties(this, locationSaved);
+        locationSaved.publishAfterCommit();
     }
-
-    @PostUpdate
-    public void onPostUpdate(){
-        OrderCanceled orderCanceled = new OrderCanceled();
-        BeanUtils.copyProperties(this, orderCanceled);
-        orderCanceled.publishAfterCommit();
-
-
-    }
-
 
     public Long getId() {
         return id;
@@ -226,29 +201,27 @@ public class Order {
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getPizzaId() {
-        return pizzaId;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setPizzaId(Long pizzaId) {
-        this.pizzaId = pizzaId;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-    public Long getQty() {
-        return qty;
+    public String getNowStatus() {
+        return nowStatus;
     }
 
-    public void setQty(Long qty) {
-        this.qty = qty;
+    public void setNowStatus(String nowStatus) {
+        this.nowStatus = nowStatus;
+    }
+    public String getDesc() {
+        return desc;
     }
 
-
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 }
 
 ```
@@ -265,7 +238,7 @@ public interface PurchaseRepository extends PagingAndSortingRepository<Purchase,
 - 적용 후 REST API 의 테스트
 ```
 # 주문처리
-http http://order:8080/order qty=10 pizzaId=10
+http http://order:8080/order pizzaId=1001 qty=10
 ```
 
 ![image](https://user-images.githubusercontent.com/70673848/98125248-975ad580-1ef7-11eb-9aa2-8c1f95dc9d6f.png)
