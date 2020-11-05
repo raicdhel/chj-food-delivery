@@ -273,9 +273,9 @@ H2가 아닌 Derby in-memory DB를 사용함
 - 결제서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
 
 ```
-# (payment) PaymentService.java
+# (payment) LocationService.java
 
-package takbaeyo.external;
+package pizza.external;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -284,46 +284,51 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Date;
 
-@FeignClient(name="payment", url="http://localhost:8082")
-public interface PaymentService {
+@FeignClient(name="location", url="http://location:8086")
+public interface LocationService {
 
-    @RequestMapping(method= RequestMethod.POST, path="/payments")
-    public void dopay(@RequestBody Payment payment);
+    @RequestMapping(method= RequestMethod.POST, path="/locations")
+    public void doSave(@RequestBody Location location);
 
 }
 ```
 
 - 주문을 받은 직후(@PostPersist) 결제를 요청하도록 처리
 ```
-# order.java (Entity)
-   @PostPersist
-    public void onPostPersist(){
-        Ordered ordered = new Ordered();
-        BeanUtils.copyProperties(this, ordered);
-        ordered.publishAfterCommit();
+# Payment.java (Entity)
+    @PostUpdate
+    public void onPostUpdate(){
+        PaymentCanceled paymentCanceled = new PaymentCanceled();
+        BeanUtils.copyProperties(this, paymentCanceled);
+        paymentCanceled.publishAfterCommit();
 
-        pizza.external.Payment payment = new pizza.external.Payment();
+        //Following code causes dependency to external APIs
+        // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
 
-        payment.setOrderId(this.getId());
-        payment.setPaymentStatus("Paid");
+        pizza.external.Location location = new pizza.external.Location();
 
-        OrderApplication.applicationContext.getBean(pizza.external.PaymentService.class)
-        .doPayment(payment);
+        location.setOrderId(this.getId());
+        location.setNowStatus(this.paymentStatus);
+
+        // mappings goes here
+        PaymentApplication.applicationContext.getBean(pizza.external.LocationService.class)
+            .doSave(location);
+    }
 ```
 
-- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 결제 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
+- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 이력 시스템이 장애가 나면 이력취소도 못받는다는 것을 확인:
 
 
 ```
-# 결제 (payment) 서비스를 잠시 내려놓음 (ctrl+c)
+# 이력저장 (location) 서비스를 잠시 내려놓음 (ctrl+c)
 
-#주문처리
-http localhost:8081/orders pizzaId=1 qty=1   #Fail
+#주문취소
+http PATCH http://localhost:8088/orders/1 orderStatus=canceled
 ```
 ![image](https://user-images.githubusercontent.com/70673848/98130658-d9871580-1efd-11eb-9447-0175789ca9f1.png)
 ```
 #결제서비스 재기동
-cd payment
+cd location
 mvn spring-boot:run
 
 #주문처리
@@ -338,9 +343,9 @@ http localhost:8081/orders pizzaId=1 qty=1   #Success
 
 ## 비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트
 
-배달이 이루어진 후에 쿠폰시스템으로 이를 알려주는 행위는 동기식이 아니라 비 동기식으로 처리하여 쿠폰 시스템의 처리를 위하여 주문이 블로킹 되지 않아도록 처리한다.
+배달이 이루어진 후에 이력저장 시스템으로 이를 알려주는 행위는 동기식이 아니라 비 동기식으로 처리하여 이력저장 시스템의 처리를 위하여 배달이 블로킹 되지 않아도록 처리한다.
  
-- 이를 위하여 배달이력에 기록을 남긴 후에 곧바로 쿠폰이 발행 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
+- 이를 위하여 배달이 완료된 후에 배달이력을 남겼 도메인 이벤트를 카프카로 송출한다(Publish)
  
 ```
 package pizza;
@@ -364,11 +369,36 @@ public class Delivery {
         Delivered delivered = new Delivered();
         BeanUtils.copyProperties(this, delivered);
         delivered.publishAfterCommit();
-
-
     }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public String getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(String deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+}
+
+
 ```
-- 배달완료 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
+- 배달완료 이벤트에 대해서 이를 수신하여 이력저장을 처리하도록 PolicyHandler 를 구현한다:
 
 ```
 package pizza;
@@ -383,28 +413,36 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PolicyHandler{
-
-    @Autowired
-    CouponRepository CouponRepository;
-
     @StreamListener(KafkaProcessor.INPUT)
     public void onStringEventListener(@Payload String eventString){
 
     }
 
+    @Autowired
+    LocationRepository locationRepository;
+
     @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverDelivered_PublishCoupon(@Payload Delivered delivered){
+    public void wheneverDelivered_ChangeStatus(@Payload Delivered delivered){
 
         if(delivered.isMe()){
+            Location location = new Location();
+            location.setOrderId(delivered.getOrderId());
+            location.setNowStatus(delivered.getDeliveryStatus());
 
-            Coupon coupon = new Coupon();
-            CouponRepository.save(coupon);
+            if(delivered.getDeliveryStatus().equals("Delivered")) {
+                location.setDesc("Your Pizza is 800m left !!!");
+            } else {
+                location.setDesc("Order and Delivery is " + delivered.getDeliveryStatus());
+            }
 
-            System.out.println("##### listener PublishCoupon : " + delivered.toJson());
+            locationRepository.save(location);
+
+            System.out.println("##### listener ChangeStatus : " + delivered.toJson());
         }
     }
 
 }
+
 
 
 ```
