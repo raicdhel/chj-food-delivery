@@ -325,16 +325,16 @@ public interface LocationService {
 #주문취소
 http PATCH http://order:8080/orders/1 orderStatus=canceled    #Fail
 ```
-![image](https://user-images.githubusercontent.com/70673848/98130658-d9871580-1efd-11eb-9447-0175789ca9f1.png)
+![image](https://user-images.githubusercontent.com/70046307/98259567-a4de9100-1fc5-11eb-9b54-45f7e2742932.png)
 ```
 #이력 서비스 재기동
 cd location
 mvn spring-boot:run
 
-#주문처리
+#주문취소
 http PATCH http://order:8080/orders/1 orderStatus=canceled   #Success
 ```
-![image](https://user-images.githubusercontent.com/70673848/98130748-ef94d600-1efd-11eb-83f6-6acad31ce584.png)
+![image](https://user-images.githubusercontent.com/70046307/98259894-043ca100-1fc6-11eb-9318-4b52f79cdb5e.png)
 
 - 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)
 
