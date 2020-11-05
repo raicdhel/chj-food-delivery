@@ -484,11 +484,11 @@ location의 처리 결과
 ## gateway 적용
 
 application.yaml파일에 소스 적용
-![image](https://user-images.githubusercontent.com/70673848/98185841-ccdfdd00-1f50-11eb-8566-10ac8d20791f.png)
+![image](https://user-images.githubusercontent.com/70046307/98247972-adc86600-1fb7-11eb-9c4a-8ed506e4f9d3.png)
 
 호출확인
 
-![image](https://user-images.githubusercontent.com/70673848/98185850-cfdacd80-1f50-11eb-8bdb-66e0c4e59169.png)
+![image](https://user-images.githubusercontent.com/70046307/98247752-60e48f80-1fb7-11eb-8c85-943fb2f77909.png)
 
 # 운영
 
