@@ -498,13 +498,11 @@ application.yaml파일에 소스 적용
 ## CI/CD 설정
 각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 Azure를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 deployment.yml, service.yml 에 포함되었다.
 
-![image](https://user-images.githubusercontent.com/70673848/98127099-a6428780-1ef9-11eb-9bda-b770e18224ae.png)
+![image](https://user-images.githubusercontent.com/70046307/98262325-d311a000-1fc8-11eb-8700-f1ecd26f06a2.png)
 
-![image](https://user-images.githubusercontent.com/70673848/98127386-ff122000-1ef9-11eb-8cf4-eb0692915a9e.png)
+![image](https://user-images.githubusercontent.com/70046307/98262512-0eac6a00-1fc9-11eb-8231-ea466f13ee50.png)
 
-![image](https://user-images.githubusercontent.com/70673848/98127453-1224f000-1efa-11eb-8e85-bbf578a71189.png)
-
-![image](https://user-images.githubusercontent.com/70673848/98127526-2832b080-1efa-11eb-92d5-e5237bb17d83.png)
+![image](https://user-images.githubusercontent.com/70046307/98262717-46b3ad00-1fc9-11eb-9789-4946b6b732c2.png)
 
 
 ## 동기식 호출 / 서킷 브레이킹 / 장애격리
