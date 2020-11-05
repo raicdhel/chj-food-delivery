@@ -237,17 +237,17 @@ public interface PurchaseRepository extends PagingAndSortingRepository<Purchase,
 ```
 - 적용 후 REST API 의 테스트
 ```
-# 주문처리
-http http://order:8080/order pizzaId=1001 qty=10
+# 주문취소
+http PATCH http://order:8080/orders/1 orderStatus=canceled
 ```
 
-![image](https://user-images.githubusercontent.com/70673848/98125248-975ad580-1ef7-11eb-9aa2-8c1f95dc9d6f.png)
+![image](https://user-images.githubusercontent.com/70046307/98248824-d0a74a00-1fb8-11eb-9551-710cce13ca4a.png)
 
 ```
-# 주문 상태 확인
-http localhost:8081/orders/1
+# location 이력 확인
+http GET http://location:8080/locations
 ```
-![image](https://user-images.githubusercontent.com/70673848/98125455-da1cad80-1ef7-11eb-8c74-bec335853edc.png)
+![image](https://user-images.githubusercontent.com/70046307/98248934-f896ad80-1fb8-11eb-9734-50f9bb9e204c.png)
 
 ## 폴리글랏 퍼시스턴스
 
