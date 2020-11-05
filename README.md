@@ -114,7 +114,7 @@
 ### 이벤트 도출
 * MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/tDh1qcevbXMxyl3teLYeckoEha73/mine/db91034c71ad70a1cc186453bf65fceb/-MLKyMFOqriwteCkmNJ8
 
-![image](https://user-images.githubusercontent.com/70046307/98222585-5b298280-1f94-11eb-8847-2e859f699d1a.png)
+![image](https://user-images.githubusercontent.com/70046307/98254967-3a772200-1fc0-11eb-919f-d3119cb6b164.png)
 
  도메인 서열 분리 
    
