@@ -157,6 +157,12 @@ mvn spring-boot:run
 cd coupon
 mvn spring-boot:run
 
+cd location
+mvn spring-boot:run
+
+cd locaview
+mvn spring-boot:run
+
 ```
 
 ## DDD 의 적용
