@@ -251,7 +251,7 @@ http GET http://location:8080/locations
 
 ## 폴리글랏 퍼시스턴스
 
-H2가 아닌 Derby in-memory DB를 사용함
+H2가 아닌 hsqldb를 사용함
 
 ```
 <dependency>
