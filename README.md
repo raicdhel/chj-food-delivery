@@ -235,8 +235,8 @@ package pizza;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface PurchaseRepository extends PagingAndSortingRepository<Purchase, Long>{
- 
+public interface LocationRepository extends PagingAndSortingRepository<Location, Long>{
+
 }
 ```
 - 적용 후 REST API 의 테스트
