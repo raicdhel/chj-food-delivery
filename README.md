@@ -521,7 +521,7 @@ feign:
 hystrix:
   command:
     default:
-      execution.isolation.thread.timeoutInMilliseconds: 500
+      execution.isolation.thread.timeoutInMilliseconds: 900
 
 ```
 - 피호출 서비스 location onPostPersist영역의 부하코드 추가 - 400 밀리에서 증감 220 밀리 정도 왔다갔다 하게
@@ -542,10 +542,11 @@ hystrix:
     }
 ```
 
-![image](https://user-images.githubusercontent.com/70673848/98189992-6e6b2c80-1f59-11eb-9851-9fa3380fa05d.png)
+![image](https://user-images.githubusercontent.com/70046307/98310896-738bb280-2011-11eb-99e3-a863e38f7431.png)
 
--운영시스템은 죽지 않고 지속적으로 CB 에 의하여 적절히 회로가 열림과 닫힘이 벌어지면서 자원을 보호하고 있음을 보여줌. 
-72% 가 성공하였고, 고객 사용성에 있어 좋지 않기 때문에 28%를 커버하기위하여  Retry 설정과 동적 Scale out (replica의 자동적 추가,HPA) 을 통하여 시스템을 확장 해주는 후속처리가 필요.
+- 서버 사용자 때문인지 실제로 응답시간이 점점 느려지는 현상이 있었다. 때문에 시간을 여러번 바꿔서 테스트했다.
+- 운영시스템은 죽지 않고 지속적으로 CB 에 의하여 적절히 회로가 열림과 닫힘이 벌어지면서 자원을 보호하고 있음을 보여줌. 
+33.33% 가 성공하였고, 고객 사용성에 있어 좋지 않기 때문에 28%를 커버하기위하여  Retry 설정과 동적 Scale out (replica의 자동적 추가,HPA) 을 통하여 시스템을 확장 해주는 후속처리가 필요.
 
 
 ### 오토스케일 아웃
