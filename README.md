@@ -629,19 +629,19 @@ locationconfigmap.yml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: locationconfigmap
+  name: location
 data:
-  TEXT1: Customer1_Company
-  TEXT2: Welcomes You
-  COMPANY: Customer1 Company Technology Pct. Ltd.
+  url:  http://location:8088
+  fluentd-sever-ip: 10.0.22.192
 ```
 
 deployment.yml
 ```
           env:
-            - name: locationconfigmap
+            - name: LANGUAGE
               valueFrom:
                 configMapKeyRef:
                   name: locationconfigmap
-                  key: COMPANY
+                  key: fluentd-server-ip
 ```
+![image](https://user-images.githubusercontent.com/70046307/98324949-fd974380-2030-11eb-8123-2874ca0cc9bb.png)
