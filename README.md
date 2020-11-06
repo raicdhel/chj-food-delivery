@@ -556,18 +556,18 @@ hystrix:
 
 - 이력저장시스템에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 15프로를 넘어서면 replica 를 10개까지 늘려준다:
 ```
-kubectl autoscale deploy pay --min=1 --max=10 --cpu-percent=15
+kubectl autoscale deploy location --min=1 --max=10 --cpu-percent=15
 ```
-![image](https://user-images.githubusercontent.com/70673848/98128510-5cf33780-1efb-11eb-8f1d-56e3eacb5d6a.png)
+![image](https://user-images.githubusercontent.com/70046307/98311731-738cb200-2013-11eb-8b23-db5e64dfcb2f.png)
 
 - CB 에서 했던 방식대로 워크로드를 2분 동안 걸어준다.
 ```
-siege -c100 -t120S -r10 --content-type "application/json" 'http://localhost:8081/orders POST {"pizzaId":1,"qty":2}
+siege -c100 -t120S -r10 --content-type "application/json" 'http://order:8080/orders POST {"pizzaId": "100", "qty":5}'
 
 ```
 - 오토스케일이 어떻게 되고 있는지 모니터링을 걸어둔다:
 ```
-kubectl get deploy payment -w
+kubectl get deploy location -w
 ```
 - 어느정도 시간이 흐른 후 (약 30초) 스케일 아웃이 벌어지는 것을 확인할 수 있다:
 ![image](https://user-images.githubusercontent.com/70673848/98128628-77c5ac00-1efb-11eb-9b45-8dbdbf340980.png)
