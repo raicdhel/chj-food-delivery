@@ -644,4 +644,4 @@ deployment.yml
                   name: locationconfigmap
                   key: fluentd-server-ip
 ```
-![image](https://user-images.githubusercontent.com/70046307/98324949-fd974380-2030-11eb-8123-2874ca0cc9bb.png)
+![image](https://user-images.githubusercontent.com/70046307/98325624-95496180-2032-11eb-9962-83f9ba42c5cc.png)
