@@ -570,7 +570,8 @@ siege -c100 -t120S -r10 --content-type "application/json" 'http://order:8080/ord
 ```
 kubectl get deploy location -w
 ```
-- 어느정도 시간이 흐른 후 (약 60초) 스케일 아웃이 벌어지는 것을 확인할 수 있다:
+- 어느정도 시간이 흐른 후 (약 60초) 스케일 아웃이 벌어지는 것을 확인할 수 있다.
+
 ![image](https://user-images.githubusercontent.com/70046307/98316769-5e695080-201e-11eb-99fd-f4dc4361b771.png)
 
 ```
