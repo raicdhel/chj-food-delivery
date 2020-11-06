@@ -558,7 +558,7 @@ hystrix:
 ```
 kubectl autoscale deploy location --min=1 --max=10 --cpu-percent=15
 ```
-![image](https://user-images.githubusercontent.com/70046307/98311731-738cb200-2013-11eb-8b23-db5e64dfcb2f.png)
+![image](https://user-images.githubusercontent.com/70046307/98316572-fca8e680-201d-11eb-8962-30892bb9ec0d.png)
 
 - CB 에서 했던 방식대로 워크로드를 2분 동안 걸어준다.
 ```
@@ -569,15 +569,14 @@ siege -c100 -t120S -r10 --content-type "application/json" 'http://order:8080/ord
 ```
 kubectl get deploy location -w
 ```
-- 어느정도 시간이 흐른 후 (약 30초) 스케일 아웃이 벌어지는 것을 확인할 수 있다:
-![image](https://user-images.githubusercontent.com/70673848/98128628-77c5ac00-1efb-11eb-9b45-8dbdbf340980.png)
+- 어느정도 시간이 흐른 후 (약 60초) 스케일 아웃이 벌어지는 것을 확인할 수 있다:
+![image](https://user-images.githubusercontent.com/70046307/98316769-5e695080-201e-11eb-99fd-f4dc4361b771.png)
 
 ```
 - siege 의 로그를 보아도 전체적인 성공률이 높아진 것을 확인 할 수 있다. 
 
 ```
-![image](https://user-images.githubusercontent.com/70673848/98187606-ad4ab380-1f54-11eb-8bb6-8d791f5f3090.png)
-
+![image](https://user-images.githubusercontent.com/70046307/98316714-4691cc80-201e-11eb-8913-ce088987d79f.png)
 
 
 ## 무정지 재배포
@@ -586,7 +585,7 @@ kubectl get deploy location -w
 
 - seige 로 배포작업 직전에 워크로드를 모니터링 함.
 ```
-siege -c100 -t120S -r10 --content-type "application/json" 'http://localhost:8081/orders POST {"pizzaId":10, "qty":10}'
+siege -c100 -t120S -r10 --content-type "application/json" 'http://order:8080/orders POST {"pizzaId":1001, "qty":10}'
 
 ```
 
