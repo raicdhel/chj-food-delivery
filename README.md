@@ -610,8 +610,7 @@ kubectl apply -f kubernetes/deployment.yaml
 
 - 동일한 시나리오로 재배포 한 후 Availability 확인:
 
-![image](https://user-images.githubusercontent.com/70673848/98135292-fffb7f80-1f02-11eb-876e-937a98b39f91.png)
-
+![image](https://user-images.githubusercontent.com/70046307/98318336-c2d9df00-2021-11eb-9eb0-7ff807a23657.png)
 
 배포기간 동안 Availability 가 변화없기 때문에 무정지 재배포가 성공한 것으로 확인됨.
 
@@ -625,5 +624,5 @@ http get방식에서 tcp방식으로 변경, 서비스포트 8080이 아닌 고�
 
 
 
-## MapConfig 구현
+## ConfigMap 구현
 
