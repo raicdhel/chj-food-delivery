@@ -624,6 +624,8 @@ http get방식에서 tcp방식으로 변경, 서비스포트 8080이 아닌 고�
 
 
 ## ConfigMap 구현
+
+locationconfigmap.yml
 ```
 apiVersion: v1
 kind: ConfigMap
@@ -632,4 +634,14 @@ metadata:
 data:
   url:  http://location:8088
   fluentd-sever-ip: 10.0.22.192
+```
+
+deployment.yml
+```
+          env:
+            - name: LANGUAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: locationconfigmap
+                  key: fluentd-server-ip
 ```
