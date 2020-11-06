@@ -268,7 +268,9 @@ H2가 아닌 hsqldb를 사용함
 
 ![image](https://user-images.githubusercontent.com/70046307/98230803-ed368880-1f9e-11eb-8cc9-4ca5e7f67b2a.png)
 
+정상적으로 동작함을 확인
 
+![image](https://user-images.githubusercontent.com/70046307/98329604-f164b380-203b-11eb-8c8b-6221a7d03942.png)
 
 ## 동기식 호출 과 Fallback 처리
 
