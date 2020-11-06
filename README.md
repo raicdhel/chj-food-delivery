@@ -581,6 +581,7 @@ kubectl get deploy location -w
 ```
 ![image](https://user-images.githubusercontent.com/70046307/98316714-4691cc80-201e-11eb-8913-ce088987d79f.png)
 
+![image](https://user-images.githubusercontent.com/70046307/98328990-78b12780-203a-11eb-8f87-a1c3eb0ff37a.png)
 
 ## 무정지 재배포
 
